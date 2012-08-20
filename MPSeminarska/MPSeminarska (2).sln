@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MPSeminarska", "..\..\..\..\..\..\Dopolnitelno\Projects\Visual Studio 2010\WebSites\MPSeminarska\", "{1A6CE665-FB5F-4B7F-BE8F-7FAF1DC25550}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/MPSeminarska"
+		Debug.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\Dopolnitelno\Projects\Visual Studio 2010\WebSites\MPSeminarska\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\MPSeminarska\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/MPSeminarska"
+		Release.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\Dopolnitelno\Projects\Visual Studio 2010\WebSites\MPSeminarska\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\MPSeminarska\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "47562"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A6CE665-FB5F-4B7F-BE8F-7FAF1DC25550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A6CE665-FB5F-4B7F-BE8F-7FAF1DC25550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
