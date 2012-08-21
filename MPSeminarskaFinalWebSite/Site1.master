@@ -1,0 +1,98 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site1.master.cs" Inherits="Site1" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title></title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <style type="text/css">
+        .style1
+        {
+            height: 1226px;
+            width: 1690px;
+        }
+        .style2
+        {
+            width: 100%;
+            margin-bottom: 37px;
+        }
+        .style3
+        {
+            width: 223px;
+            height: 149px;
+        }
+        .style4
+        {
+            width: 214px;
+        }
+        .style5
+        {
+            text-align: center;
+        }
+        .style6
+        {
+            text-align: right;
+        }
+        .style7
+        {
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server" class="style1" 
+    
+    
+    style="margin: auto; background-position: left bottom; background-image: url('/Sliki/Copy of pile-of-books-with-one-book-open-on-white-backgrounds-wallpapers.jpg'); background-repeat: no-repeat; position: relative; width: auto; left: inherit; right: auto;">
+
+    <table class="style2">
+        <tr>
+            <td class="style4" rowspan="2">
+                <img alt="" class="style3" src="Sliki/university-students-blue-sky.jpg" /></td>
+            <td class="style6" style="position: relative">
+                <asp:LoginName ID="LoginName1" runat="server" />
+                <asp:LoginStatus ID="LoginStatus1" runat="server" />
+            </td>
+        </tr>
+        <tr>
+            <td class="style5" style="position: relative">
+                <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Names="Lucida Bright" 
+                    Font-Overline="False" Font-Size="XX-Large" ForeColor="#3333FF" 
+                    Text="IME NA PORTALOT"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td class="style4">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server">
+                </asp:ContentPlaceHolder>
+            </td>
+            <td class="style7">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td class="style4">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                </asp:ContentPlaceHolder>
+            </td>
+            <td class="style6">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+            </td>
+        </tr>
+        <tr>
+            <td class="style4">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder4" runat="server">
+                </asp:ContentPlaceHolder>
+            </td>
+            <td class="style6">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder5" runat="server">
+                </asp:ContentPlaceHolder>
+            </td>
+        </tr>
+    </table>
+
+    </form>
+</body>
+</html>
