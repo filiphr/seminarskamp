@@ -29,11 +29,12 @@
         }
         .style5
         {
-            text-align: center;
+           text-align: center;
         }
         .style6
         {
-            text-align: right;
+            text-align: center;
+            margin-right: 50px;
         }
         .style7
         {
@@ -51,7 +52,7 @@
         <tr>
             <td class="style4" rowspan="2">
                 <img alt="" class="style3" src="Sliki/university-students-blue-sky.jpg" /></td>
-            <td class="style6" style="position: relative">
+            <td class="style6" style="position: relative; text-align: right;">
                 <asp:LoginName ID="LoginName1" runat="server" />
                 <asp:LoginStatus ID="LoginStatus1" runat="server" />
             </td>
