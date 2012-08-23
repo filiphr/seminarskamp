@@ -18,17 +18,17 @@ VALUES (10);
 
 
 
-INSERT INTO Predmet(Ime)		
-VALUES ('Mikroprocesorski Sistemi');
+INSERT INTO Predmet(Ime, Slika)		
+VALUES ('Mikroprocesorski Sistemi', 'KE.JPG');
 
-INSERT INTO Predmet(Ime)		
-VALUES ('Sistemski Softver');
+INSERT INTO Predmet(Ime, Slika)		
+VALUES ('Sistemski Softver', SS.JPG);
 
 INSERT INTO Predmet(Ime)		
 VALUES ('Prepoznavanje na Oblici');
 
-INSERT INTO Predmet(Ime)		
-VALUES ('Elektronska i Mobilna Komercija');
+INSERT INTO Predmet(Ime, Slika)		
+VALUES ('Elektronska i Mobilna Komercija', EMK.JPG);
 
 INSERT INTO Predmet(Ime)		
 VALUES ('Korisnicki Interfejsi');
@@ -38,6 +38,18 @@ VALUES ('Podatocno Rudarenje');
 
 INSERT INTO Predmet(Ime)		
 VALUES ('Digitalen Prenos na Informacii');
+
+INSERT INTO Predmet(Ime, Slika)		
+VALUES ('Mrezno Programiranje', MP.JPG);
+
+INSERT INTO Predmet(Ime, Slika)		
+VALUES ('Bazi Na Podatoci', BP.JPG);
+
+INSERT INTO Predmet(Ime, Slika)		
+VALUES ('Kompjuterski Mrezi', KM.JPG);
+
+INSERT INTO Predmet(Ime, Slika)		
+VALUES ('Elektronska i Mobilna Komercija', EMK.JPG);
 
 
 INSERT INTO NastavenKadar(Ime, Prezime)		
@@ -175,4 +187,23 @@ VALUES ('Prisustvo' , 3, 0, 5);
 
 INSERT INTO Predmet_Uslov(uslov_ime, predmet_kod, Min_Procent, Procent)
 VALUES ('Seminarska' , 3, 15, 30);
+
+
+INSERT INTO Predmet_Profesor(Kod, profesor_kod)
+VALUES (3, 7);
+
+INSERT INTO Predmet_Profesor(Kod, profesor_kod)
+VALUES (3, 8);
+
+INSERT INTO Predmet_Profesor(Kod, profesor_kod)
+VALUES (4, 2);
+
+INSERT INTO Predmet_Profesor(Kod, profesor_kod)
+VALUES (10, 2);
+
+INSERT INTO Predmet_Profesor(Kod, profesor_kod)
+VALUES (11, 5);
+
+INSERT INTO Predmet_Profesor(Kod, profesor_kod)
+VALUES (12, 2);
 

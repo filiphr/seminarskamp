@@ -159,7 +159,7 @@
 <asp:Content ID="Content5" ContentPlaceHolderID="ContentPlaceHolder4" runat="Server">
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="ContentPlaceHolder5" runat="Server">
-<asp:LinkButton runat="server" Text="Назад" ID="lbtnNazad" 
+    <asp:LinkButton runat="server" Text="Назад" ID="lbtnNazad" 
         onclick="lbtnNazad_Click">
 </asp:LinkButton>
 

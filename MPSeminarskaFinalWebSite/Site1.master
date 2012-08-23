@@ -18,27 +18,38 @@
             width: 100%;
             margin-bottom: 37px;
         }
-        .style3
-        {
-            width: 223px;
-            height: 149px;
-        }
         .style4
         {
             width: 214px;
         }
-        .style5
-        {
-           text-align: center;
-        }
         .style6
         {
-            text-align: center;
-            margin-right: 50px;
+            text-align: right;
         }
         .style7
         {
             text-align: justify;
+        }
+        .style9
+        {
+            height: 112px;
+            text-align: right;
+        }
+        .style10
+        {
+            height: 38px;
+            text-align: right;
+        }
+        .style11
+        {
+            width: 421px;
+            height: 112px;
+            text-align: right;
+        }
+        .style12
+        {
+            margin-top: 0px;
+            margin-bottom: 38px;
         }
     </style>
 </head>
@@ -46,48 +57,51 @@
     <form id="form1" runat="server" class="style1" 
     
     
-    style="margin: auto; background-position: left bottom; background-image: url('/Sliki/Copy of pile-of-books-with-one-book-open-on-white-backgrounds-wallpapers.jpg'); background-repeat: no-repeat; position: relative; width: auto; left: inherit; right: auto;">
+    
+    
+    style="margin: auto; background-position: left top; background-image: url('/MPSeminarskaFinal/Sliki/Copy of pile-of-books-with-one-book-open-on-white-backgrounds-wallpapers.jpg'); background-repeat: no-repeat; position: relative; width: auto; left: inherit; right: auto;">
 
     <table class="style2">
         <tr>
-            <td class="style4" rowspan="2">
-                <img alt="" class="style3" src="Sliki/university-students-blue-sky.jpg" /></td>
-            <td class="style6" style="position: relative; text-align: right;">
+            <td class="style10" colspan="3" 
+                style="background-position: left top; background-repeat: no-repeat">
+                Најавени сте како:
                 <asp:LoginName ID="LoginName1" runat="server" />
-                <asp:LoginStatus ID="LoginStatus1" runat="server" />
+                <asp:LoginStatus ID="LoginStatus1" runat="server" LoginText="Логирај се" 
+                    LogoutAction="RedirectToLoginPage" LogoutPageUrl="~/Login.aspx" 
+                    LogoutText="Одлогирај се" onloggedout="LoginStatus1_LoggedOut" />
             </td>
         </tr>
         <tr>
-            <td class="style5" style="position: relative">
-                <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Names="Lucida Bright" 
-                    Font-Overline="False" Font-Size="XX-Large" ForeColor="#3333FF" 
-                    Text="IME NA PORTALOT"></asp:Label>
+            <td class="style9" 
+                style="background-position: left top; background-repeat: no-repeat">
+                &nbsp;</td>
+            <td class="style11" 
+                style="background-position: left top; background-repeat: no-repeat">
+                &nbsp;</td>
+            <td class="style9" 
+                style="background-position: left top; background-repeat: no-repeat">
+                <asp:Image ID="Image1" runat="server" CssClass="style12" Height="69px" 
+                    ImageUrl="~/Sliki/1258244_stock-photo-social-media-bubble-concept.jpg" 
+                    Width="98px" />
             </td>
         </tr>
         <tr>
-            <td class="style4">
+            <td class="style4" rowspan="2">
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server">
                 </asp:ContentPlaceHolder>
-            </td>
-            <td class="style7">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td class="style4">
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
                 </asp:ContentPlaceHolder>
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder4" runat="server">
+                </asp:ContentPlaceHolder>
             </td>
-            <td class="style6">
+            <td class="style7" colspan="2">
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
                 </asp:ContentPlaceHolder>
             </td>
         </tr>
         <tr>
-            <td class="style4">
-                <asp:ContentPlaceHolder ID="ContentPlaceHolder4" runat="server">
-                </asp:ContentPlaceHolder>
-            </td>
-            <td class="style6">
+            <td class="style6" colspan="2">
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder5" runat="server">
                 </asp:ContentPlaceHolder>
             </td>

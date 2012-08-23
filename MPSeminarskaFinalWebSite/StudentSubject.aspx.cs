@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Collections;
 
 public partial class StudentSubject : System.Web.UI.Page
 {
@@ -15,60 +16,70 @@ public partial class StudentSubject : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            String predmet = Request.QueryString["ime_predmet"];
+            String predmet = Request.QueryString["predmet"];
             int predmet_kod;
             Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
 
             lblSkala.Text = "Скалата по предметот " + predmet + " е следната";
 
             IspolniSkalaTabela(predmet_kod);
-            IspolniOcenkaGrid();
+            IspolniPoeniTabela(predmet_kod);
+            IspolniUslov(predmet_kod);
         }
         else
         {
-            if (Cache["tblProverka"] != null)
+            if (Cache["tabelaPoeni"] != null)
             {
-                Table tblProverka = Cache["tblProverka"] as Table;
-                tblProverkaHolder.Controls.Add(tblProverka);
+                Table tblPoeni = Cache["tabelaPoeni"] as Table;
+                tblPoeniHolder.Controls.Add(tblPoeni);
             }
         }
     }
 
-    private double PresmetajPoeni()
-    {
-        double vkupno = 0;
-        Table tblProverka = (tblProverkaHolder.Controls[0] as Table);
-        foreach (TableRow row in tblProverka.Rows)
-        {
-            if (!(row is TableHeaderRow))
-            {
-                foreach (TableCell cell in row.Cells)
-                {
-                    foreach (Control control in cell.Controls)
-                    {
-                        if (control is TextBox)
-                        {
-                            double tmp;
-                            Double.TryParse(((TextBox)control).Text, out tmp);
-                            vkupno += tmp;
-                        }
-                    }
-                }
-            }
-        }
-
-        return vkupno;
-    }
-
-    private void IspolniOcenkaGrid()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="predmet_kod"></param>
+    private void IspolniUslov(int predmet_kod)
     {
         string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
         SqlConnection konekcija = new SqlConnection(konekcijaString);
-        string sqlString = "SELECT * FROM Student_Predmet WHERE predmet_kod=@kod AND student_indeks=@indeks";
+        string sqlString = "SELECT uslov_ime, Min_Procent, Procent, Maks_poeni FROM Predmet_Uslov WHERE predmet_kod=@kod";
         SqlCommand komanda = new SqlCommand(sqlString, konekcija);
 
-        komanda.Parameters.AddWithValue("@kod", 3);
-        komanda.Parameters.AddWithValue("@indeks", "63/2009");
+        komanda.Parameters.AddWithValue("@kod", predmet_kod);
+
+        SqlDataAdapter adapter = new SqlDataAdapter(komanda);
+        DataSet ds = new DataSet();
+
+        try
+        {
+            konekcija.Open();
+            adapter.Fill(ds, "Uslov");
+            gvUslov.DataSource = ds;
+            gvUslov.DataBind();
+
+
+            ViewState["UslovDataSet"] = ds;
+        }
+        catch { }
+        finally
+        {
+            konekcija.Close();
+        }
+    }
+
+    private void IspolniPoeniTabela(int predmet_kod)
+    {
+        string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
+        SqlConnection konekcija = new SqlConnection(konekcijaString);
+        string sqlString = "SELECT op.uslov_ime, op.Poeni, pu.Maks_poeni "
+            + "FROM Osvoeni_Poeni as op, Predmet_Uslov as pu "
+            + "WHERE op.predmet_kod=@kod AND op.student_indeks=@indeks AND op.predmet_kod=pu.predmet_kod AND op.uslov_ime=pu.uslov_ime";
+        SqlCommand komanda = new SqlCommand(sqlString, konekcija);
+
+        komanda.Parameters.AddWithValue("@kod", predmet_kod);
+        komanda.Parameters.AddWithValue("@indeks", Session["indeks"]);
 
         SqlDataAdapter adapter = new SqlDataAdapter(komanda);
         DataSet ds = new DataSet();
@@ -77,15 +88,15 @@ public partial class StudentSubject : System.Web.UI.Page
         {
             konekcija.Open();
             adapter.Fill(ds, "Poeni");
-            gvRealna.DataSource = ds;
-            gvRealna.DataBind();
+
 
             if (ds.Tables[0].Rows.Count != 0)
             {
-                ispolniProverka(ds);
+                ispolniPoeni(ds);
                 lblRealna.Text = "Моментални резултати";
-                lblProverka.Text = " Проверете си каква оценка со можете да добиете со вашите поени и колку ви фали за повисока оценка";
-            } else
+                lblProverka.Text = "Внесете ги вашите поени во текст полињата доколку сакате да си ја проверите можната оценка";
+            }
+            else
             {
                 lblRealna.Text = "Немате внесено поени по овој предмет";
             }
@@ -99,57 +110,60 @@ public partial class StudentSubject : System.Web.UI.Page
         }
     }
 
-    private void ispolniProverka(DataSet ds)
+    /// <summary>
+    /// Функција која ја исполнува табелата со освоените поени и со поените кои може самиот корисник да си ги менува
+    /// </summary>
+    /// <param name="ds">DataSet од каде што се повлекуваат податоците за табелата</param>
+    private void ispolniPoeni(DataSet ds)
     {
-        Table tblProverka = new Table();
-        tblProverka.CssClass = "tabelaProverka";
-        tblProverka.GridLines = GridLines.Both;
+        Table tblPoeni = new Table();
+        tblPoeni.CssClass = "tabelaPoeni";
+        tblPoeni.GridLines = GridLines.Both;
 
+        TableHeaderRow headerRow = new TableHeaderRow();
+        TableHeaderCell headerCell = null;
 
-        TableHeaderRow headerRows = new TableHeaderRow();
-        TableHeaderCell cell = null;
-        foreach (DataColumn dc in ds.Tables[0].Columns)
-        {
-            cell = new TableHeaderCell();
-            cell.Text = dc.ColumnName;
-            cell.CssClass = "headerRow";
-            headerRows.Cells.Add(cell);
-        }
-        headerRows.Cells.RemoveAt(0);
-        headerRows.Cells.RemoveAt(0);
-        tblProverka.Rows.Add(headerRows);
-
+        TableRow dataRow = new TableRow();
         TableCell dataCell = null;
-        TableRow dataRow = null;
+
+        TableRow inputRow = new TableRow();
+        TableCell inputCell = null;
+
         foreach (DataRow row in ds.Tables[0].Rows)
         {
-            dataRow = new TableRow();
-            foreach (DataColumn dc in ds.Tables[0].Columns)
-            {
-                dataCell = new TableCell();
-                TextBox dataTextBox = new TextBox();
-                dataTextBox.Text = row[dc].ToString();
-                dataTextBox.CssClass = "dataText";
-                //dataCell.Text = row[dc].ToString();
-                dataCell.Controls.Add(dataTextBox);
-                dataRow.Cells.Add(dataCell);
-            }
-            dataRow.Cells.RemoveAt(0);
-            dataRow.Cells.RemoveAt(0);
-            tblProverka.Rows.Add(dataRow);
+            headerCell = new TableHeaderCell();
+            headerCell.Text = row[0].ToString() + "<br/>(макс " + row[2].ToString() + " поени)";
+            headerRow.Cells.Add(headerCell);
+
+            dataCell = new TableCell();
+            dataCell.Text = row[1].ToString();
+            dataRow.Cells.Add(dataCell);
+
+            inputCell = new TableCell();
+            TextBox inputTextBox = new TextBox();
+            inputTextBox.Text = row[1].ToString();
+            inputCell.Controls.Add(inputTextBox);
+            inputRow.Cells.Add(inputCell);
         }
 
-        Cache["tblProverka"] = tblProverka;
-        tblProverkaHolder.Controls.Add(tblProverka);
+        tblPoeni.Rows.Add(headerRow);
+        tblPoeni.Rows.Add(dataRow);
+        tblPoeni.Rows.Add(inputRow);
+        Cache["tabelaPoeni"] = tblPoeni;
+        tblPoeniHolder.Controls.Add(tblPoeni);
     }
 
+    /// <summary>
+    /// Функција која го исполнува GridView-то каде што се наоѓа скалата
+    /// </summary>
+    /// <param name="predmet_kod">кодот на предметот за кој се исполнува скалата</param>
     private void IspolniSkalaTabela(int predmet_kod)
     {
         string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
         SqlConnection konekcija = new SqlConnection(konekcijaString);
         string sqlString = "SELECT * FROM Skala WHERE predmet_kod=@kod";
         SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-        komanda.Parameters.AddWithValue("@kod", 3);
+        komanda.Parameters.AddWithValue("@kod", predmet_kod);
 
         SqlDataAdapter adapter = new SqlDataAdapter(komanda);
         DataSet ds = new DataSet();
@@ -168,17 +182,102 @@ public partial class StudentSubject : System.Web.UI.Page
             konekcija.Close();
         }
     }
+
+    /// <summary>
+    /// Клик на копчето за пресметување на оценка
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void presmetaj_Click(object sender, EventArgs e)
     {
         double vkupno = PresmetajPoeni();
-        lblPoeni.Text = vkupno.ToString();
+        if (vkupno >= 0)
+        {
+            lblPoeni.Text = "Имате вкупно " + vkupno.ToString() + " поени.";
+        }
         string ocena = PresmetajOcena(vkupno);
         lblOcenka.Text = ocena;
     }
 
+
+    /// <summary>
+    /// Функција со која се пресметуваат вкупниот број на поени (проценти) на студентот
+    /// </summary>
+    /// <returns>Бројот на освоени поени (проценти)</returns>
+    private double PresmetajPoeni()
+    {
+        int predmet_kod;
+        Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
+
+
+        Table tblPoeni = (tblPoeniHolder.Controls[0] as Table);
+
+        //Мапа каде што како клуч се чува условот а како вредност, освоените поени за тој услов
+        Dictionary<String, String> uslovPoeni = new Dictionary<string, string>();
+
+        int numberOfCells = tblPoeni.Rows[0].Cells.Count;
+
+        for (int i = 0; i < numberOfCells; i++)
+        {
+            string help = tblPoeni.Rows[0].Cells[i].Text;
+            string valueString = ((TextBox)tblPoeni.Rows[2].Cells[i].Controls[0]).Text;
+
+            //Одстрани го додатниот текст од клучот
+            string keyString = help.Remove(help.IndexOf("<br/>"));
+
+            //Додај го парот Име на Услов со освоени поени за тој услов
+            uslovPoeni.Add(keyString, valueString);
+        }
+
+        double vkupno = 0;
+        foreach (KeyValuePair<string, string> par in uslovPoeni)
+        {
+            double poeni;
+            if (Double.TryParse(par.Value, out poeni))
+            {
+                //Доколку е нумеричка вредност, доколку не треба да влезе во вкупниот број на поени
+                //корисникот треба да внесе не валиден податок
+                ArrayList maksPoeni = StoredProcedures.GetMaksPoeniPredmet(par.Key, predmet_kod);
+                double maksMozni = Convert.ToDouble(maksPoeni[0]);//Максимален број на поени кој студентот може да ги освои за одредениот услов
+                double minProcent = Convert.ToDouble(maksPoeni[1]);//Минималниот процент кој треба студентот да го освои за да го положи предметот
+                double procent = Convert.ToDouble(maksPoeni[2]);//Процент со кој условот влегува во финалната оценка
+
+                double osvoenProcent = 0;
+                if (maksMozni != 0)
+                {
+                    osvoenProcent = poeni / maksMozni * 100;
+                }
+
+                if (osvoenProcent < minProcent)
+                {
+                    double falatPoeni = minProcent / 100 * maksMozni - poeni;
+
+                    lblPoeni.Text = "Не го исполнувате условот да имате минимум " + minProcent
+                        + " на " + par.Key + " за да имате шанса положите предметот. Потребни ви се уште "
+                        + falatPoeni + " за да го задоволите условот за " + par.Key;
+                    return -1;
+                }
+
+                vkupno += osvoenProcent * procent / 100; //Додај колку проценти влегуваат во вкупниот број
+            }
+        }
+
+        return vkupno;
+    }
+
+    /// <summary>
+    /// Врз осова на вкупниот број на поени ја пресметува оценката која сутдентот треба да ја добие
+    /// </summary>
+    /// <param name="vkupno">Вкупниот број на освоени проценти</param>
+    /// <returns>Оценката која студентот ја има</returns>
     private string PresmetajOcena(double vkupno)
     {
         string ocena = "5";
+
+        if (vkupno < 0)
+        {
+            return ocena;
+        }
         double maxO = 0;
         DataSet dsSkala = ViewState["SkalaDataSet"] as DataSet;
         foreach (DataRow row in dsSkala.Tables[0].Rows)
@@ -197,5 +296,19 @@ public partial class StudentSubject : System.Web.UI.Page
             ocena = "10";
 
         return ocena;
+    }
+
+    /// <summary>
+    /// Справување со настанот кога се менува страна во GridView
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void gvUslov_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gvUslov.PageIndex = e.NewPageIndex;
+        DataSet ds = (DataSet)ViewState["UslovDataSet"];
+        gvUslov.SelectedIndex = -1;
+        gvUslov.DataSource = ds;
+        gvUslov.DataBind();
     }
 }

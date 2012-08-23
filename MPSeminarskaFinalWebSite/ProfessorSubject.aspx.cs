@@ -13,73 +13,58 @@ public partial class ProfessorSubject : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            String predmet = Request.QueryString["ime_predmet"];
+            String predmet = Request.QueryString["predmet"];
             int predmet_kod;
             Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
 
             lblSkala.Text = "Скалата по предметот " + predmet + " е следната";
             lblUslov.Text = "Променете ги условите и границите за " + predmet;
 
-            predmet_kod = 3;
             IspolniSkala(predmet_kod);
-            //TODO
-            IspolniUslov();
+            IspolniUslov(predmet_kod);
         }
     }
 
-    private void IspolniUslov()
+
+    /// <summary>
+    /// Функција која се повикува да се исполни GridView за условите
+    /// </summary>
+    /// <param name="predmet_kod"></param>
+    private void IspolniUslov(int predmet_kod)
     {
-        string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-        SqlConnection konekcija = new SqlConnection(konekcijaString);
-        string sqlString = "SELECT uslov_ime, Min_Procent, Procent FROM Predmet_Uslov WHERE predmet_kod=@kod";
-        SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-
-        komanda.Parameters.AddWithValue("@kod", 3);
-
-        SqlDataAdapter adapter = new SqlDataAdapter(komanda);
-        DataSet ds = new DataSet();
-
         try
         {
-            konekcija.Open();
-            adapter.Fill(ds, "Uslov");
+            DataSet ds = StoredProcedures.GetUslovWithKod(predmet_kod);
             gvUslov.DataSource = ds;
             gvUslov.DataBind();
-
             ViewState["UslovDataSet"] = ds;
         }
-        catch { }
-        finally
-        {
-            konekcija.Close();
-        }
+        catch { } 
     }
 
+    /// <summary>
+    /// Функција која се повикува за да се исполни GridView за скалата
+    /// </summary>
+    /// <param name="predmet_kod"></param>
     private void IspolniSkala(int predmet_kod)
     {
-        string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-        SqlConnection konekcija = new SqlConnection(konekcijaString);
-        string sqlString = "SELECT * FROM Skala WHERE predmet_kod=@kod";
-        SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-        komanda.Parameters.AddWithValue("@kod", predmet_kod);
-
-        SqlDataAdapter adapter = new SqlDataAdapter(komanda);
-        DataSet ds = new DataSet();
-
         try
         {
-            konekcija.Open();
-            adapter.Fill(ds, "Skala");
+            DataSet ds = StoredProcedures.GetSkalaWithKod(predmet_kod);
             gvSkala.DataSource = ds;
             gvSkala.DataBind();
             ViewState["SkalaDataSet"] = ds;
         }
         catch { }
-        finally
-        {
-            konekcija.Close();
-        }
     }
+
+
+
+    /// <summary>
+    /// Настан кој се генерира кога се започнува со ажурирање на GridView gvSkala
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvSkala_RowEditing(object sender, GridViewEditEventArgs e)
     {
         DataSet ds = (DataSet)ViewState["SkalaDataSet"];
@@ -87,6 +72,12 @@ public partial class ProfessorSubject : System.Web.UI.Page
         gvSkala.DataSource = ds;
         gvSkala.DataBind();
     }
+
+    /// <summary>
+    /// Настан кој се генерира кога се откажува ажурирање на GridVIew gvSkala
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvSkala_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
         DataSet ds = (DataSet)ViewState["SkalaDataSet"];
@@ -95,6 +86,12 @@ public partial class ProfessorSubject : System.Web.UI.Page
         gvSkala.DataBind();
         lblSkalaEror.Visible = false;
     }
+
+    /// <summary>
+    /// Настан кој се генерира кога ажурираме оценка
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvSkala_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         int rowUpdating = e.RowIndex;
@@ -120,25 +117,16 @@ public partial class ProfessorSubject : System.Web.UI.Page
         {
             int predmet_kod;
             Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
-            predmet_kod = 3;
 
-
-            string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-            SqlConnection konekcija = new SqlConnection(konekcijaString);
-            string sqlString = "UPDATE Skala SET Min=@min, Maks=@maks WHERE predmet_kod=@kod AND ocena_ocena=@ocena";
-            SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-            komanda.Parameters.AddWithValue("@min", dolna);
-            komanda.Parameters.AddWithValue("@maks", gorna);
-            komanda.Parameters.AddWithValue("@ocena", gvSkala.Rows[rowUpdating].Cells[0].Text);
-            komanda.Parameters.AddWithValue("@kod", predmet_kod);
+            int ocena;
+            Int32.TryParse(gvSkala.Rows[rowUpdating].Cells[0].Text, out ocena);
 
             int efekt = 0;
+
             try
             {
-                konekcija.Open();
-                efekt = komanda.ExecuteNonQuery();
+                efekt = StoredProcedures.UpdateSkala(ocena, dolna, gorna, predmet_kod);
                 lblSkalaEror.Visible = false;
-
             }
             catch (Exception err)
             {
@@ -147,9 +135,9 @@ public partial class ProfessorSubject : System.Web.UI.Page
             }
             finally
             {
-                konekcija.Close();
                 gvSkala.EditIndex = -1;
             }
+
             if (efekt != 0)
             {
                 IspolniSkala(predmet_kod);
@@ -161,11 +149,13 @@ public partial class ProfessorSubject : System.Web.UI.Page
             lblSkalaEror.Text = errorMessage;
             lblSkalaEror.Visible = true;
         }
-
-
-
     }
 
+    /// <summary>
+    /// Настан кој се генерира кој некој услов почнува да се ажурира
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvUslov_RowEditing(object sender, GridViewEditEventArgs e)
     {
         DataSet ds = (DataSet)ViewState["UslovDataSet"];
@@ -173,6 +163,12 @@ public partial class ProfessorSubject : System.Web.UI.Page
         gvUslov.DataSource = ds;
         gvUslov.DataBind();
     }
+
+    /// <summary>
+    /// Настан кој настанува кога се откажува променување
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvUslov_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
         DataSet ds = (DataSet)ViewState["UslovDataSet"];
@@ -180,6 +176,12 @@ public partial class ProfessorSubject : System.Web.UI.Page
         gvUslov.DataSource = ds;
         gvUslov.DataBind();
     }
+
+    /// <summary>
+    /// Настан кој се повикува кога се ажурира некој услов
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvUslov_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         int rowUpdating = e.RowIndex;
@@ -204,27 +206,13 @@ public partial class ProfessorSubject : System.Web.UI.Page
 
         if (update)
         {
+            int efekt = 0;
             int predmet_kod;
             Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
-            predmet_kod = 3;
-
-
-            string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-            SqlConnection konekcija = new SqlConnection(konekcijaString);
-            string sqlString = "UPDATE Predmet_Uslov SET Min_Procent=@min_procent, Procent=@procent WHERE predmet_kod=@kod AND uslov_ime=@uslov";
-            SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-            komanda.Parameters.AddWithValue("@uslov", uslov);
-            komanda.Parameters.AddWithValue("@min_procent", min);
-            komanda.Parameters.AddWithValue("@procent", procent);
-            komanda.Parameters.AddWithValue("@kod", predmet_kod);
-
-            int efekt = 0;
             try
             {
-                konekcija.Open();
-                efekt = komanda.ExecuteNonQuery();
+                efekt = StoredProcedures.UpdatePredmetUslov(uslov, min, procent, predmet_kod);
                 lblUslovError.Visible = false;
-
             }
             catch (Exception err)
             {
@@ -233,12 +221,13 @@ public partial class ProfessorSubject : System.Web.UI.Page
             }
             finally
             {
-                konekcija.Close();
                 gvUslov.EditIndex = -1;
             }
+
             if (efekt != 0)
             {
-                IspolniUslov();
+                IspolniUslov(predmet_kod);
+
             }
         }
         else
@@ -247,10 +236,15 @@ public partial class ProfessorSubject : System.Web.UI.Page
             lblUslovError.Text = errorMessage;
             lblUslovError.Visible = true;
         }
-
-
-
     }
+
+
+
+    /// <summary>
+    /// Настан за бришење на еден Услов
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvUslov_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         int rowDeleting = e.RowIndex;
@@ -258,23 +252,13 @@ public partial class ProfessorSubject : System.Web.UI.Page
         String uslov = gvUslov.Rows[rowDeleting].Cells[0].Text;
         int predmet_kod;
         Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
-        predmet_kod = 3;
-
-
-        string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-        SqlConnection konekcija = new SqlConnection(konekcijaString);
-        string sqlString = "DELETE from Predmet_Uslov WHERE predmet_kod=@kod AND uslov_ime=@uslov";
-        SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-        komanda.Parameters.AddWithValue("@uslov", uslov);
-        komanda.Parameters.AddWithValue("@kod", predmet_kod);
 
         int efekt = 0;
+
         try
         {
-            konekcija.Open();
-            efekt = komanda.ExecuteNonQuery();
+            efekt = StoredProcedures.RemoveUslov(uslov, predmet_kod);
             lblUslovError.Visible = false;
-
         }
         catch (Exception err)
         {
@@ -283,22 +267,37 @@ public partial class ProfessorSubject : System.Web.UI.Page
         }
         finally
         {
-            konekcija.Close();
             gvUslov.EditIndex = -1;
         }
+
         if (efekt != 0)
         {
-            IspolniUslov();
+
+            IspolniUslov(predmet_kod);
         }
     }
+
+
+    /// <summary>
+    /// Настан кој се повикува кога се менува страница во GridView
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void gvUslov_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         gvUslov.PageIndex = e.NewPageIndex;
         DataSet ds = (DataSet)ViewState["UslovDataSet"];
         gvUslov.SelectedIndex = -1;
+        gvUslov.EditIndex = -1;
         gvUslov.DataSource = ds;
         gvUslov.DataBind();
     }
+
+    /// <summary>
+    /// Пренасочување на нова страна каде што корисникот може да внесе нова скала
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void btnNovaSkala_Click(object sender, EventArgs e)
     {
         string predmet_kod = Request.QueryString["predmet_kod"];

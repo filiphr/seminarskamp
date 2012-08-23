@@ -3,7 +3,18 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <style type="text/css">
-        .style8
+        .tabelaSkala
+        {
+            width: 100%;
+            margin: 10;
+        }
+        
+        .tabelaSkala tr
+        {
+           text-align:left;
+        }
+        
+        .tabelaUslov
         {
             width: 100%;
             margin: 10;
@@ -59,13 +70,13 @@
 <asp:Content ID="Content5" ContentPlaceHolderID="ContentPlaceHolder4" runat="Server">
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="ContentPlaceHolder5" runat="Server">
-    <table class="style8">
+    <table class="tabelaUslov">
         <tr>
             <td>
                 <asp:Label ID="lblSkala" runat="server"></asp:Label>
             </td>
         </tr>
-        <tr align="left">
+        <tr>
             <td>
                 <asp:Label ID="lblSkalaEror" runat="server" Visible="False" ForeColor="Red"></asp:Label>
             </td>
@@ -81,7 +92,8 @@
                         <asp:BoundField DataField="Min" HeaderText="Долна граница" />
                         <asp:BoundField DataField="Maks" HeaderText="Горна граница" />
                         <asp:CommandField CancelText="Откажи" DeleteText="Избриши" EditText="Промени" InsertText="Внеси"
-                            NewText="Ново" SelectText="Селектирај" ShowEditButton="True" />
+                            NewText="Ново" SelectText="Селектирај" ShowEditButton="True" 
+                            UpdateText="Ажурирај" />
                     </Columns>
                     <EditRowStyle BackColor="#7C6F57" />
                     <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />

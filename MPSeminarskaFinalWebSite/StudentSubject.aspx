@@ -16,24 +16,29 @@
             text-align:left;
         }
         
-        .tabelaProverka
+        .tabelaPoeni
         {
             margin: 10;
             width: 100%;
             padding : 2;
         }
-        .headerRow
+        
+        .tabelaPoeni th
         {
             margin: 30;
             padding :2px;
         }
         
-        .dataText
+        .tabelaPoeni input
         {
-            width:80%;
+            width:50%;
             text-align:center;
         }
         
+
+        
+        
+      
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder3" Runat="Server">
@@ -48,59 +53,23 @@
                </asp:Label>
                <br />
                <br />
-                <asp:GridView ID="gvRealna" runat="server" BackColor="White" 
-                    BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" 
-                    GridLines="Vertical" AutoGenerateColumns="False">
-                    <AlternatingRowStyle BackColor="#DCDCDC" />
-                    <Columns>
-                        <asp:BoundField DataField="I_Kolokvium_Usno" HeaderText="I Колоквиум Усно" />
-                        <asp:BoundField DataField="II_Kolokvium_Usno" HeaderText="II Колоквиум Усно" />
-                        <asp:BoundField DataField="Ispit_Usno" HeaderText="Испит Усно" />
-                        <asp:BoundField DataField="I_Kolokvium_Pismeno" 
-                            HeaderText="I Колоквиум Писмено" />
-                        <asp:BoundField DataField="II_Kolokvium_Pismeno" 
-                            HeaderText="II Колоквиум Писмено" />
-                        <asp:BoundField DataField="Ispit_Pismeno" HeaderText="Испит Писмено" />
-                        <asp:BoundField DataField="Laboratoriski" HeaderText="Лабораториски" />
-                        <asp:BoundField DataField="Prisustvo" HeaderText="Присуство" />
-                        <asp:BoundField DataField="Domasna" HeaderText="Домашна" />
-                        <asp:BoundField DataField="Seminarska" HeaderText="Семинарска" />
-                        <asp:BoundField DataField="Testovi" HeaderText="Тестови" />
-                    </Columns>
-                    <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
-                    <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
-                    <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" />
-                    <RowStyle BackColor="#EEEEEE" ForeColor="Black" />
-                    <SelectedRowStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
-                    <SortedAscendingCellStyle BackColor="#F1F1F1" />
-                    <SortedAscendingHeaderStyle BackColor="#0000A9" />
-                    <SortedDescendingCellStyle BackColor="#CAC9C9" />
-                    <SortedDescendingHeaderStyle BackColor="#000065" />
-                </asp:GridView>     
+                <asp:placeholder runat="server" ID="tblPoeniHolder"></asp:placeholder>
+                <br />
+                <asp:Label ID="lblProverka" runat="server">
+               </asp:Label>
                 <br />
                 </td>
         </tr>
-        <tr>
-            <td colspan="2">
-            <asp:Label ID="lblProverka" runat="server">
-               </asp:Label>
-            <br />
-            <br />
-            <asp:placeholder runat="server" ID="tblProverkaHolder"></asp:placeholder>
-                <br />
-               <br />
-            </td>
-        </tr>
-
          <tr align="left">
             <td>
-               <asp:Button ID="presmetaj" runat="server" Text="Пресметај вкпно поени и оценка" 
-                    onclick="presmetaj_Click" />
+               <asp:Button ID="presmetaj" runat="server" Text="Пресметај вкупно поени и оценка" 
+                    onclick="presmetaj_Click" Width="333px" />
             </td>
         </tr>
         <tr align="left">
             <td>
-                Имате вкупно <asp:Label ID="lblPoeni" runat="server"></asp:Label> поени.
+                <asp:Label ID="lblPoeni" runat="server"></asp:Label>
+                <br />
             </td>
             
         </tr>
@@ -117,7 +86,7 @@
 <asp:Content ID="Content6" ContentPlaceHolderID="ContentPlaceHolder5" Runat="Server">
     <table  class="tabelaSkala">
     <tr>
-        <td>
+        <td colspan=2>
             <asp:Label ID="lblSkala" runat="server" Text=""></asp:Label>
         </td>
     </tr>
@@ -125,7 +94,7 @@
         <td>
             <asp:GridView ID="gvSkala" runat="server" AutoGenerateColumns="False" 
                 CellPadding="4" ForeColor="#333333" GridLines="None" 
-                style="text-align: center" Width="429px">
+                style="text-align: center" Height="100%">
                 <AlternatingRowStyle BackColor="White" />
                 <Columns>
                     <asp:BoundField DataField="ocena_ocena" HeaderText="Оцена" />
@@ -143,7 +112,30 @@
                 <SortedDescendingCellStyle BackColor="#D4DFE1" />
                 <SortedDescendingHeaderStyle BackColor="#15524A" />
             </asp:GridView>
-            
+        </td>
+        <td>
+            <asp:GridView ID="gvUslov" runat="server" BackColor="White" BorderColor="#999999"
+                    BorderStyle="None" BorderWidth="1px" CellPadding="3" 
+                GridLines="Vertical" AutoGenerateColumns="False"
+                    AllowPaging="True" onpageindexchanging="gvUslov_PageIndexChanging" 
+                PageSize="5">
+                    <AlternatingRowStyle BackColor="#DCDCDC" />
+                    <Columns>
+                        <asp:BoundField DataField="uslov_ime" HeaderText="Услов" ReadOnly="True" />
+                        <asp:BoundField DataField="Min_Procent" HeaderText="Минимален процент за положување (од 100)" />
+                        <asp:BoundField DataField="Procent" HeaderText="Процент во оценката" />
+                        <asp:BoundField DataField="Maks_poeni" HeaderText="Максимум поени" />
+                    </Columns>
+                    <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
+                    <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
+                    <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" />
+                    <RowStyle BackColor="#EEEEEE" ForeColor="Black" />
+                    <SelectedRowStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
+                    <SortedAscendingCellStyle BackColor="#F1F1F1" />
+                    <SortedAscendingHeaderStyle BackColor="#0000A9" />
+                    <SortedDescendingCellStyle BackColor="#CAC9C9" />
+                    <SortedDescendingHeaderStyle BackColor="#000065" />
+                </asp:GridView>
         </td>
     </tr>
 </table>
