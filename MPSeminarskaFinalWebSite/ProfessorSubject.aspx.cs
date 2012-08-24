@@ -6,6 +6,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
+using System.Data.OleDb;
+using System.Data.Common;
+using System.IO;
 
 public partial class ProfessorSubject : System.Web.UI.Page
 {
@@ -34,7 +37,7 @@ public partial class ProfessorSubject : System.Web.UI.Page
     {
         try
         {
-            DataSet ds = StoredProcedures.GetUslovWithKod(predmet_kod);
+            DataSet ds = StoredProcedures.GetPredmetUslovWithKod(predmet_kod);
             gvUslov.DataSource = ds;
             gvUslov.DataBind();
             ViewState["UslovDataSet"] = ds;
@@ -187,19 +190,25 @@ public partial class ProfessorSubject : System.Web.UI.Page
         int rowUpdating = e.RowIndex;
         TextBox tbMin = (TextBox)gvUslov.Rows[rowUpdating].Cells[1].Controls[0];
         TextBox tbProcent = (TextBox)gvUslov.Rows[rowUpdating].Cells[2].Controls[0];
+        TextBox tbMaks = (TextBox)gvUslov.Rows[rowUpdating].Cells[3].Controls[0];
         String uslov = gvUslov.Rows[rowUpdating].Cells[0].Text;
 
         String errorMessage = "";
 
-        int min, procent;
+        double min, procent, maks;
         bool update = true;
 
-        if (!Int32.TryParse(tbMin.Text, out min))
+        if (!Double.TryParse(tbMin.Text, out min))
         {
             update = false;
         }
 
-        if (!Int32.TryParse(tbProcent.Text, out procent))
+        if (!Double.TryParse(tbProcent.Text, out procent))
+        {
+            update = false;
+        }
+
+        if (!Double.TryParse(tbMaks.Text, out maks))
         {
             update = false;
         }
@@ -211,7 +220,7 @@ public partial class ProfessorSubject : System.Web.UI.Page
             Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
             try
             {
-                efekt = StoredProcedures.UpdatePredmetUslov(uslov, min, procent, predmet_kod);
+                efekt = StoredProcedures.UpdatePredmetUslov(uslov, min, procent, predmet_kod, maks);
                 lblUslovError.Visible = false;
             }
             catch (Exception err)
@@ -228,7 +237,8 @@ public partial class ProfessorSubject : System.Web.UI.Page
             {
                 IspolniUslov(predmet_kod);
 
-            }
+            } else
+                IspolniUslov(predmet_kod);
         }
         else
         {
@@ -304,5 +314,61 @@ public partial class ProfessorSubject : System.Web.UI.Page
         string predmet = Request.QueryString["predmet"];
 
         Response.Redirect("~/NovaSkala.aspx?predmet_kod=" + predmet_kod + "&predmet=" + predmet);
+    }
+
+    protected void Import_Click(object sender, EventArgs e)
+    {
+        lblError.Text = "";
+        // if you have Excel 2007 uncomment this line of code
+        //  string excelConnectionString =string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Extended Properties=Excel 8.0",path);
+
+        string ExcelContentType = "application/vnd.ms-excel";
+        string Excel2010ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        if (FileUpload1.HasFile)
+        {
+            //Провери го Content Type на фајлот
+            if (FileUpload1.PostedFile.ContentType == ExcelContentType || FileUpload1.PostedFile.ContentType == Excel2010ContentType)
+            {
+                //Зачувај ја патеката
+                string path = string.Concat(Server.MapPath("~/TempFiles/"), FileUpload1.FileName);
+                try
+                {
+
+                    //Зачувај го фајлот како привремен, подоцна може да се избрише
+                    FileUpload1.SaveAs(path);
+
+                    string excelConnectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=Excel 8.0", path);
+
+                    DataSet ds = new DataSet();
+
+                    //Креирање на конекција до Excel Workbook
+                    using (OleDbConnection connection = new OleDbConnection(excelConnectionString))
+                    {
+
+                        OleDbCommand command = new OleDbCommand
+                                ("Select * FROM [" + tbSheetName.Text + "$]", connection);
+                        command.CommandType = CommandType.Text;
+
+                        connection.Open();
+
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        adapter.Fill(ds, "ExcelData");
+
+                        int predmet_kod;
+                        Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
+
+                        StoredProcedures.UpdateOsvoeniPoeni(ds, predmet_kod, tbIndeksFormat.Text);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lblError.Text = ex.Message;
+                }
+                finally
+                {
+                    File.Delete(path);
+                }
+            }
+        }
     }
 }

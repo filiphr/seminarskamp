@@ -9,11 +9,7 @@
             margin: 10;
         }
         
-        .tabelaSkala tr
-        {
-           text-align:left;
-        }
-        
+      
         .tabelaUslov
         {
             width: 100%;
@@ -37,12 +33,15 @@
                     BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" AutoGenerateColumns="False"
                     OnRowCancelingEdit="gvUslov_RowCancelingEdit" OnRowEditing="gvUslov_RowEditing"
                     OnRowUpdating="gvUslov_RowUpdating" OnRowDeleting="gvUslov_RowDeleting" 
-                    AllowPaging="True" onpageindexchanging="gvUslov_PageIndexChanging" PageSize="5">
+                    AllowPaging="True" onpageindexchanging="gvUslov_PageIndexChanging" 
+                    PageSize="5">
                     <AlternatingRowStyle BackColor="#DCDCDC" />
                     <Columns>
                         <asp:BoundField DataField="uslov_ime" HeaderText="Услов" ReadOnly="True" />
-                        <asp:BoundField DataField="Min_Procent" HeaderText="Минимален процент за положување (од 100)" />
+                        <asp:BoundField DataField="Min_Procent" 
+                            HeaderText="Минимален број поени за положување" />
                         <asp:BoundField DataField="Procent" HeaderText="Процент во оценката" />
+                        <asp:BoundField DataField="Maks_poeni" HeaderText="Максимум Поени" />
                         <asp:CommandField CancelText="Откажи" EditText="Промени" NewText="Ново" SelectText="Селектирај"
                             ShowEditButton="True" UpdateText="Ажурирај" />
                         <asp:TemplateField>
@@ -71,17 +70,17 @@
 </asp:Content>
 <asp:Content ID="Content6" ContentPlaceHolderID="ContentPlaceHolder5" runat="Server">
     <table class="tabelaUslov">
-        <tr>
+        <tr align="left">
             <td>
                 <asp:Label ID="lblSkala" runat="server"></asp:Label>
             </td>
         </tr>
-        <tr>
+        <tr align="left">
             <td>
                 <asp:Label ID="lblSkalaEror" runat="server" Visible="False" ForeColor="Red"></asp:Label>
             </td>
         </tr>
-        <tr>
+        <tr align="left">
             <td>
                 <asp:GridView ID="gvSkala" runat="server" AutoGenerateColumns="False" CellPadding="4"
                     ForeColor="#333333" GridLines="None" OnRowCancelingEdit="gvSkala_RowCancelingEdit"
@@ -112,6 +111,41 @@
             <td>
                 <asp:Button runat="server" Text="Внесете нова скала" ID="btnNovaSkala" 
                     onclick="btnNovaSkala_Click" />
+            </td>
+        </tr>
+
+        <tr align="left">
+            <td>
+            <asp:Label ID="lblIndeksFormat" runat="server" Text="Име на колоната со индекси на студентите:  "></asp:Label>
+                <asp:TextBox ID="tbIndeksFormat" runat="server" ValidationGroup="grImport"></asp:TextBox><asp:RequiredFieldValidator
+                    ID="RequiredFieldValidator1" runat="server" 
+                    ErrorMessage="Внесете име на колоната" ControlToValidate="tbIndeksFormat" 
+                    ForeColor="Red" ValidationGroup="grImport"></asp:RequiredFieldValidator>
+            </td>
+        </tr>
+        <tr align="left">
+            <td>
+            <asp:Label ID="lblSheetName" runat="server" Text="Име на Sheet кој ја содржи табелата со поеони:  "></asp:Label>
+                <asp:TextBox ID="tbSheetName" runat="server" ValidationGroup="grImport"></asp:TextBox><asp:RequiredFieldValidator
+                    ID="RequiredFieldValidator3" runat="server" 
+                    ErrorMessage="Внесете име на Sheet" ControlToValidate="tbSheetName" 
+                    ForeColor="Red" ValidationGroup="grImport"></asp:RequiredFieldValidator>
+            </td>
+        </tr>
+        <tr align="left">
+            <td>
+                 <asp:FileUpload ID="FileUpload1"  runat="server" />
+                <asp:Button ID="Import" runat="server" Text="Префрлување на поените на сите студент" onclick="Import_Click" 
+                    ValidationGroup="grImport" /> 
+                <br />
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
+                     ErrorMessage="Прикажете excel документ за да ги внесете поените од него" 
+                     ControlToValidate="FileUpload1" Display="Dynamic" ForeColor="Red" 
+                     ValidationGroup="grImport"></asp:RequiredFieldValidator>
+                <br />
+                <asp:Label ID="lblImport" runat="server" Text="Напоменување, имињата на колоните за содветни услови треба да се исти како што ги имате сетирано на веб стрната"></asp:Label>
+                <br />
+                <asp:Label ID="lblError" runat="server" Text=""></asp:Label>
             </td>
         </tr>
     </table>

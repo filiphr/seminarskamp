@@ -37,38 +37,27 @@ public partial class StudentSubject : System.Web.UI.Page
     }
 
     /// <summary>
-    /// 
+    /// Функција со која се исполнува GriedView за условот
     /// </summary>
-    /// <param name="predmet_kod"></param>
+    /// <param name="predmet_kod">кодот според кој ќе го најдеме факултетот</param>
     private void IspolniUslov(int predmet_kod)
     {
-        string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-        SqlConnection konekcija = new SqlConnection(konekcijaString);
-        string sqlString = "SELECT uslov_ime, Min_Procent, Procent, Maks_poeni FROM Predmet_Uslov WHERE predmet_kod=@kod";
-        SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-
-        komanda.Parameters.AddWithValue("@kod", predmet_kod);
-
-        SqlDataAdapter adapter = new SqlDataAdapter(komanda);
-        DataSet ds = new DataSet();
-
         try
         {
-            konekcija.Open();
-            adapter.Fill(ds, "Uslov");
+            DataSet ds = StoredProcedures.GetPredmetUslovWithKod(predmet_kod);
             gvUslov.DataSource = ds;
             gvUslov.DataBind();
-
 
             ViewState["UslovDataSet"] = ds;
         }
         catch { }
-        finally
-        {
-            konekcija.Close();
-        }
     }
 
+
+    /// <summary>
+    /// Функција со која се исполнува табелата со поени на студентот
+    /// </summary>
+    /// <param name="predmet_kod">кодот според кој ќе го најдеме факултетот</param>
     private void IspolniPoeniTabela(int predmet_kod)
     {
         string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();

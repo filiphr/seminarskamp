@@ -21,7 +21,7 @@ public partial class Login : System.Web.UI.Page
             Session["indeks"] = indeks;
         }
 
-        Response.Redirect("ИзборНаПредмети.aspx");
+        Response.Redirect("IzborNaPredmeti.aspx");
 
     }
 }

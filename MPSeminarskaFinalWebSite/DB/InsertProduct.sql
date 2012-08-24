@@ -1,4 +1,4 @@
-INSERT INTO Ocena(Ocena)
+﻿INSERT INTO Ocena(Ocena)
 VALUES (5);
 
 INSERT INTO Ocena(Ocena)
@@ -102,38 +102,38 @@ INSERT INTO Student(Indeks, Ime, Prezime)
 VALUES ('357/2009', 'Vasil', 'Stardelov');
 
 
-INSERT INTO Uslov(Ime)
-VALUES ('I_Kolokvium_Usno');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'I Колоквиум Усно');
 
-INSERT INTO Uslov(Ime)
-VALUES ('II_Kolokvium_Usno');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'I Колоквиум Писмено');
 
-INSERT INTO Uslov(Ime)
-VALUES ('I_Kolokvium_Pismeno');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'II Колоквиум Усно');
 
-INSERT INTO Uslov(Ime)
-VALUES ('II_Kolokvium_Pismeno');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'II Колоквиум Писмено');
 
-INSERT INTO Uslov(Ime)
-VALUES ('Ispit_Pismeno');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'Испит Писмено');
 
-INSERT INTO Uslov(Ime)
-VALUES ('Ispit_Usno');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'Испит Усно');
 
-INSERT INTO Uslov(Ime)
-VALUES ('Laboratoriski');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'Лабораториски');
 
-INSERT INTO Uslov(Ime)
-VALUES ('Seminarska');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'Семинарска');
 
-INSERT INTO Uslov(Ime)
-VALUES ('Prisustvo');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'Присуство');
 
-INSERT INTO Uslov(Ime)
-VALUES ('Domasna');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'Домашна');
 
-INSERT INTO Uslov(Ime)
-VALUES ('Testovi');
+INSERT INTO Predefinirani_Uslovi(Ime)
+VALUES (N'Тестови');
 
 
 INSERT INTO Skala(predmet_kod, ocena_ocena, Min, Maks)
