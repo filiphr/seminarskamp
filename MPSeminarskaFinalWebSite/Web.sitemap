@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode title="Најава" description="The root page." url="Login.aspx">
+    <siteMapNode title="Избор на предмети" description="Some sub page." url="IzborNaPredmeti.aspx">
+      <siteMapNode title="Администрација" description="Some sub page." url="AdminStrana.aspx"/>
+      <siteMapNode title="Одбран предмет" description="Some sub page." url="PredmetStudent.aspx"/>
+      <siteMapNode title="Одбран предмет" description="Some sub page." url="PredmetProfesor.aspx">
+        <siteMapNode title="Нова скала" description="Some sub page." url="NovaSkala.aspx"/>
+        <siteMapNode title="Внеси резултати" description="Some sub page." url="PostaviPoeni.aspx"/>
+      </siteMapNode>
+    </siteMapNode>
+    
+  </siteMapNode>
+</siteMap>

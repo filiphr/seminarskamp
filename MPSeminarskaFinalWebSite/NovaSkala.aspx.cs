@@ -7,6 +7,9 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 
+/// <summary>
+/// .aspx Страна која се користи за зачувуање на нова скала за даден предмет
+/// </summary>
 public partial class NovaSkala : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -15,66 +18,55 @@ public partial class NovaSkala : System.Web.UI.Page
         {
             int predmet_kod;
             Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
-            predmet_kod = 3;
 
             ispolniTabela(predmet_kod);
         }
     }
 
+    /// <summary>
+    /// Функција која се поцикува за да се исполнат текст полињата со соодветната скала за даден предмет
+    /// </summary>
+    /// <param name="predmet_kod"></param>
     private void ispolniTabela(int predmet_kod)
     {
-        string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-        SqlConnection konekcija = new SqlConnection(konekcijaString);
-        string sqlString = "SELECT ocena_ocena, Min, Maks FROM Skala WHERE predmet_kod=@kod";
-        SqlCommand komanda = new SqlCommand(sqlString, konekcija);
-
-        komanda.Parameters.AddWithValue("@kod", predmet_kod);
-
-        SqlDataAdapter adapter = new SqlDataAdapter(komanda);
-        DataSet ds = new DataSet();
-
-        try
+        DataSet ds = StoriraniProceduri.GetSkala(predmet_kod);
+        foreach (DataRow row in ds.Tables[0].Rows)
         {
-            konekcija.Open();
-            adapter.Fill(ds, "Skala");
-            foreach (DataRow row in ds.Tables[0].Rows)
-            {
 
-                string ocena = row[0].ToString();
-                Label lblOcena = (Label)tblSkala.FindControl("lblOcena" + ocena);
-                TextBox tbDolna = (TextBox)tblSkala.FindControl("tbDolna" + ocena);
-                TextBox tbGorna = (TextBox)tblSkala.FindControl("tbGorna" + ocena);
+            string ocena = row[1].ToString();
+            Label lblOcena = (Label)tblSkala.FindControl("lblOcena" + ocena);
+            TextBox tbDolna = (TextBox)tblSkala.FindControl("tbDolna" + ocena);
+            TextBox tbGorna = (TextBox)tblSkala.FindControl("tbGorna" + ocena);
 
-                lblOcena.Text = ocena;
-                tbDolna.Text = row[1].ToString();
-                tbGorna.Text = row[2].ToString();
-            }
-
-
-            ViewState["SkalaDataSet"] = ds;
+            lblOcena.Text = ocena;
+            tbDolna.Text = row[2].ToString();
+            tbGorna.Text = row[3].ToString();
         }
-        catch { }
-        finally
-        {
-            konekcija.Close();
-        }
+
+        
     }
+    /// <summary>
+    /// Настан кој се генерира кога ќе се кликне на зачувај скала
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void btnSkala_Click(object sender, EventArgs e)
     {
         zacuvajSkala();
     }
 
+    /// <summary>
+    /// Функција која се повикува за да се зачува новата скала за даден предмет
+    /// </summary>
     private void zacuvajSkala()
     {
         lblSuccess.Text = "";
         int predmet_kod;
         Int32.TryParse(Request.QueryString["predmet_kod"], out predmet_kod);
-        predmet_kod = 3;
 
 
         string konekcijaString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
         SqlConnection konekcija = new SqlConnection(konekcijaString);
-        string sqlString = "UPDATE Skala SET Min=@min, Maks=@maks WHERE predmet_kod=@kod AND ocena_ocena=@ocena";
 
         string sqlString2 = "UPDATE Skala SET Min = CASE ocena_ocena "
         + "WHEN @ocena5 THEN @min5 "
@@ -134,11 +126,17 @@ public partial class NovaSkala : System.Web.UI.Page
             lblSuccess.Text = "Успешно ја зачувавте скалата";
         }
     }
+
+    /// <summary>
+    /// Настан кој се генерира при клик на назад копчето
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void lbtnNazad_Click(object sender, EventArgs e)
     {
         string predmet_kod = Request.QueryString["predmet_kod"];
         string predmet = Request.QueryString["predmet"];
 
-        Response.Redirect("~/ProfessorSubject.aspx?predmet_kod=" + predmet_kod + "&predmet=" + predmet);
+        Response.Redirect("~/PredmetProfesor.aspx?predmet_kod=" + predmet_kod + "&predmet=" + predmet);
     }
 }

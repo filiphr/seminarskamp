@@ -1,113 +1,131 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site1.master.cs" Inherits="Site1" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
+    <link rel="Stylesheet" type="text/css" href="CSS/MPSeminarskaCSS.css" />
     <title></title>
-    <asp:ContentPlaceHolder id="head" runat="server">
+    <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
     <style type="text/css">
-        .style1
+        a:hover
         {
-            height: 1226px;
-            width: 1690px;
+            color: Red;
         }
-        .style2
+        
+        .form
         {
-            width: 100%;
-            margin-bottom: 37px;
+            margin: auto;
         }
-        .style4
+        #main
         {
-            width: 214px;
+            width: 1124px;
+            height: 900px;
+            background-position: center top;
+            padding:5px;
+            
         }
-        .style6
+        #navigation
         {
-            text-align: right;
+            padding-top:20;
+            vertical-align: text-top;
+            width: 20px;
+            background-color: #CDCDCD;
         }
-        .style7
+        #body
         {
             text-align: justify;
+            vertical-align:top;
+            height:700px;
+            background-color:#8F8FBD;
         }
-        .style9
+        
+        #header
         {
-            height: 112px;
+            height: 30px;
+            width: 100%;
             text-align: right;
+            background-position: left top;
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-image: url('/MPSeminarskaFinal/Sliki2/header.PNG');
+            color: White;
+            font-weight: bolder;
         }
-        .style10
+        .style1
         {
-            height: 38px;
-            text-align: right;
+            height: 205px;
         }
-        .style11
+        #footer
         {
-            width: 421px;
-            height: 112px;
-            text-align: right;
-        }
-        .style12
-        {
-            margin-top: 0px;
-            margin-bottom: 38px;
-        }
+            width: 100%;
+            height: 50px;
+            background-color:Gray;
+            }
     </style>
 </head>
 <body>
-    <form id="form1" runat="server" class="style1" 
-    
-    
-    
-    
-    style="margin: auto; background-position: left top; background-image: url('/MPSeminarskaFinal/Sliki/Copy of pile-of-books-with-one-book-open-on-white-backgrounds-wallpapers.jpg'); background-repeat: no-repeat; position: relative; width: auto; left: inherit; right: auto;">
-
-    <table class="style2">
+    <form id="form1" runat="server" class="form" align="center">
+    <table id="main" align="center">
         <tr>
-            <td class="style10" colspan="3" 
-                style="background-position: left top; background-repeat: no-repeat">
-                Најавени сте како:
-                <asp:LoginName ID="LoginName1" runat="server" />
-                <asp:LoginStatus ID="LoginStatus1" runat="server" LoginText="Логирај се" 
-                    LogoutAction="RedirectToLoginPage" LogoutPageUrl="~/Login.aspx" 
-                    LogoutText="Одлогирај се" onloggedout="LoginStatus1_LoggedOut" />
+            <td id="header" colspan="3">
+                &nbsp;
+                <table width="100%">
+                    <tr>
+                        <td align="left">
+                            <asp:Label ID="lblKorisnici" runat="server"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:Label ID="Label1" runat="server" Visible="False" Text="Најавени сте како: "></asp:Label>
+                            <asp:LoginName ID="LoginName1" runat="server" />
+                            <asp:LoginStatus ID="LoginStatus1" runat="server" LoginText="Логирај се" LogoutAction="Redirect"
+                                LogoutPageUrl="~/Login.aspx" LogoutText="Одлогирај се" OnLoggedOut="LoginStatus1_LoggedOut"/>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
-        <tr>
-            <td class="style9" 
-                style="background-position: left top; background-repeat: no-repeat">
-                &nbsp;</td>
-            <td class="style11" 
-                style="background-position: left top; background-repeat: no-repeat">
-                &nbsp;</td>
-            <td class="style9" 
-                style="background-position: left top; background-repeat: no-repeat">
-                <asp:Image ID="Image1" runat="server" CssClass="style12" Height="69px" 
-                    ImageUrl="~/Sliki/1258244_stock-photo-social-media-bubble-concept.jpg" 
-                    Width="98px" />
+        <tr >
+            <td id="navigation">
+                <asp:LoginView ID="LoginView1" runat="server">
+                    <RoleGroups>
+                        <asp:RoleGroup Roles="Професор">
+                            <ContentTemplate>
+                                <div class="style22">
+                                    <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Login.aspx"> Најава </asp:HyperLink>
+                                    <br />
+                                    <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="~/IzborNaPredmeti.aspx">Избор на предмети</asp:HyperLink>
+                                    <br />
+                                    <asp:HyperLink ID="HyperLink5" runat="server" NavigateUrl="~/AdminStrana.aspx">Администрација</asp:HyperLink>
+                                    <br />
+                                </div>
+                            </ContentTemplate>
+                        </asp:RoleGroup>
+                        <asp:RoleGroup Roles="Студент">
+                            <ContentTemplate>
+                                <div class="style21">
+                                    <asp:HyperLink ID="HyperLink6" runat="server" NavigateUrl="~/Login.aspx">Најава</asp:HyperLink>
+                                    <br />
+                                    <asp:HyperLink ID="HyperLink7" runat="server" NavigateUrl="~/IzborNaPredmeti.aspx">Мои предмети</asp:HyperLink>
+                                    <br />
+                                </div>
+                            </ContentTemplate>
+                        </asp:RoleGroup>
+                    </RoleGroups>
+                </asp:LoginView>
             </td>
-        </tr>
-        <tr>
-            <td class="style4" rowspan="2">
-                <asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server">
-                </asp:ContentPlaceHolder>
-                <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
-                </asp:ContentPlaceHolder>
-                <asp:ContentPlaceHolder ID="ContentPlaceHolder4" runat="server">
-                </asp:ContentPlaceHolder>
-            </td>
-            <td class="style7" colspan="2">
+            <td id="body">
+                <asp:SiteMapPath ID="SiteMapPath1" runat="server">
+                </asp:SiteMapPath>
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
                 </asp:ContentPlaceHolder>
             </td>
         </tr>
         <tr>
-            <td class="style6" colspan="2">
-                <asp:ContentPlaceHolder ID="ContentPlaceHolder5" runat="server">
-                </asp:ContentPlaceHolder>
+            <td id="footer" colspan="2" class="style1">
             </td>
         </tr>
     </table>
-
     </form>
 </body>
 </html>
