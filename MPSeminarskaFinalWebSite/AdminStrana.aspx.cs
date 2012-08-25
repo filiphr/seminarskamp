@@ -77,6 +77,7 @@ public partial class AdminStrana : System.Web.UI.Page
     /// </summary>
     private void hideStudentPoeni()
     {
+        lblPromeniPoeniPoraka.Text = "";
         btnPromeniPoeni.Visible = false;
         tblStudentPoeniHolder.Visible = false;
     }
@@ -277,7 +278,14 @@ public partial class AdminStrana : System.Web.UI.Page
         int predmet_kod;
         Int32.TryParse(lstPredmeti.SelectedValue, out predmet_kod);
 
-        StoriraniProceduri.InsertStudentIntoStudentPredmet(student_indeks, predmet_kod);
+        try
+        {
+            StoriraniProceduri.InsertStudentIntoStudentPredmet(student_indeks, predmet_kod);
+        }
+        catch (Exception err)
+        {
+            lblPoraka1.Text = err.Message;
+        }
         lstStudenti.Items.Clear();
         IspolniStudenti();
         
